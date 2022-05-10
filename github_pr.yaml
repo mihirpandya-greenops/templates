@@ -9,6 +9,13 @@ spec:
     - name: pr
       script:
         image: docker.io/greenopsinc/pygithub
+        env:
+          - name: TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: github-pat
+                key: token
+                optional: false
         command: [python]
         source: |
           from github import Github
@@ -20,7 +27,7 @@ spec:
           letters = string.ascii_lowercase
           new_branch = "test-" + ''.join(random.choice(letters) for i in range(10))
 
-          token = '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'
+          token = os.getenv('TOKEN')
           print(token)
           g = Github(token)
           repo = g.get_repo("mihirpandya-greenops/testapp_source")
