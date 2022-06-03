@@ -23,7 +23,7 @@ spec:
           value: --
         - name: argocd-server-address
         - name: argocd-credentials-secret
-          value: argocd-credentials-secret
+          value: argocd-user
       script:
         image: argoproj/argocd:{{inputs.parameters.argocd-version}}
         command: [bash]
@@ -31,9 +31,16 @@ spec:
           - name: ARGOCD_AUTH_TOKEN
             value: ""
           - name: ARGOCD_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: "{{inputs.parameters.argocd-credentials-secret}}"
+                key: username
             value: admin
           - name: ARGOCD_PASSWORD
-            value: e3k8tG1x4mbwXMJ4
+            valueFrom:
+              secretKeyRef:
+                name: "{{inputs.parameters.argocd-credentials-secret}}"
+                key: password
           - name: ARGOCD_SERVER
             value: "{{inputs.parameters.argocd-server-address}}"
         source: |
