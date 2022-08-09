@@ -9,7 +9,7 @@ spec:
     - name: jenkins-job-trigger
       script:
         image: docker.io/greenopsinc/pygithub
-        command: [python]
+        command: [/bin/bash, -c, pip install python-jenkins && python]
         source: |
           jenkins_url = 'http://192.168.64.21:32075'
           print(jenkins_url)
