@@ -38,10 +38,10 @@ spec:
           contents = repo.get_contents("/deployment-manifest/k8s/manifest.yaml", ref=new_branch)
           raw_contents = contents.decoded_content.decode()
           if "docker.io/1mihirpandya/testapp" in raw_contents:
-              raw_contents = raw_contents.replace("image: docker.io/1mihirpandya/testapp", "image: testapp")
+              raw_contents = raw_contents.replace("image: docker.io/1mihirpandya/testapp", "image: docker.io/1mihirpandya/testapp:v2")
               raw_contents = raw_contents.replace("replicas: 3", "replicas: 5")
           else:
-              raw_contents = raw_contents.replace("image: testapp", "image: docker.io/1mihirpandya/testapp")
+              raw_contents = raw_contents.replace("image: docker.io/1mihirpandya/testapp:v2", "image: docker.io/1mihirpandya/testapp")
               raw_contents = raw_contents.replace("replicas: 5", "replicas: 3")
           repo.update_file(contents.path, "updating release", raw_contents, contents.sha, branch=new_branch)
           #Creating pull request
