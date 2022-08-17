@@ -37,7 +37,7 @@ spec:
           #Updating new branch
           contents = repo.get_contents("/deployment-manifest/k8s/manifest.yaml", ref=new_branch)
           raw_contents = contents.decoded_content.decode()
-          if "docker.io/1mihirpandya/testapp" in raw_contents:
+          if "docker.io/1mihirpandya/testapp:latest" in raw_contents:
               raw_contents = raw_contents.replace("image: docker.io/1mihirpandya/testapp:latest", "image: docker.io/1mihirpandya/testapp:v2")
               raw_contents = raw_contents.replace("replicas: 3", "replicas: 5")
           else:
