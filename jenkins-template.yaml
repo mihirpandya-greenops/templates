@@ -11,10 +11,10 @@ spec:
         image: docker.io/greenopsinc/pygithub
         command: [/bin/bash, -c, pip install python-jenkins && python]
         source: |
-          jenkins_url = 'http://192.168.64.21:32075'
+          jenkins_url = 'http://jenkins.jenkins.svc.cluster.local:8080'
           print(jenkins_url)
           jenkins_username = 'admin' #os.getenv('JENKINS_USERNAME')
-          jenkins_password = '2546fd2aff054382bede4e830cb07020'
+          jenkins_password = '3ca64df101f34603a761ae0cc1edd267'
           job_name = 'wait-step'
           # token_name = os.getenv('TOKEN_NAME')
 
