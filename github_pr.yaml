@@ -35,12 +35,12 @@ spec:
           #Creating new branch
           repo.create_git_ref(ref='refs/heads/' + new_branch, sha=sb.commit.sha)
           #Updating new branch
-          contents = repo.get_contents("/deployment-manifest/k8s/manifest.yaml", ref=new_branch)
+          contents = repo.get_contents("/emailtree/deployment-manifest-env1/deployment.yaml", ref=new_branch)
           raw_contents = contents.decoded_content.decode()
-          if "docker.io/1mihirpandya/testapp:latest" in raw_contents:
-              raw_contents = raw_contents.replace("image: docker.io/1mihirpandya/testapp:latest", "image: docker.io/1mihirpandya/testapp:v2")
+          if "image: argoproj/rollouts-demo:blue" in raw_contents:
+              raw_contents = raw_contents.replace("image: argoproj/rollouts-demo:blue", "image: argoproj/rollouts-demo:green")
           else:
-              raw_contents = raw_contents.replace("image: docker.io/1mihirpandya/testapp:v2", "image: docker.io/1mihirpandya/testapp:latest")
+              raw_contents = raw_contents.replace("image: argoproj/rollouts-demo:green", "image: argoproj/rollouts-demo:blue")
           repo.update_file(contents.path, "updating release", raw_contents, contents.sha, branch=new_branch)
           #Creating pull request
           pr = repo.create_pull(title="Updating release", body="updates", head=new_branch, base=source)
