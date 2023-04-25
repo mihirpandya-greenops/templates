@@ -1,0 +1,37 @@
+#kubectl create secret generic bitbucket-secret -n argo --from-literal=token=<TOKEN_VALUE>
+#kubectl create secret generic aws-secret -n argo --from-literal=access-key=<ACCESS_KEY> --from-literal=secret-key=<SECRET_KEY> --from-literal=region=<REGION>
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: eksctl
+spec:
+  templates:
+  - name: create-cluster
+    script:
+      image: weaveworks/eksctl
+      command: [/bin/sh]
+      env:
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: "aws-secret"
+              key: access-key
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: "aws-secret"
+              key: secret-key
+        - name: AWS_DEFAULT_REGION
+          valueFrom:
+            secretKeyRef:
+              name: "aws-secret"
+              key: region
+        - name: BITBUCKET_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "bitbucket-secret"
+              key: token
+      source: |
+        set -euo pipefail
+        git clone https://x-token-auth:$BITBUCKET_PASSWORD@bitbucket.org/apitopia/greenops.git
+        eksctl create cluster -f greenops/kube-cluster.yaml
