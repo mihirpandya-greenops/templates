@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: eksctl
+  name: 
 spec:
   templates:
   - name: create-cluster
@@ -35,3 +35,9 @@ spec:
         set -euo pipefail
         git clone https://x-token-auth:$BITBUCKET_PASSWORD@bitbucket.org/apitopia/greenops.git
         eksctl create cluster -f greenops/kube-cluster.yaml
+        eksctl get cluster > cluster-name.txt
+    outputs:
+      parameters:
+      - name: cluster-name
+        valueFrom:
+          path: cluster-name.txt
