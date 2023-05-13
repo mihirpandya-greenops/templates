@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: docker-image-create-push
+  namespace: argo
+spec:
+  workflowMetadata:
+  entrypoint: docker-image-create-push
+  templates:
+    - name: docker-image-create-push
+      inputs:
+        parameters:
+          - name: repo-url
+          - name: dockerfile-path
+            value: Dockerfile
+          - name: git-cred-secret
+          - name: image-name
+          - name: image-tag
+          - name: registry-org-name
+      container:
+          name: kaniko
+          image: gcr.io/kaniko-project/executor:latest
+          args:
+            - "--context=git://{{inputs.parameters.repo-url}}"
+            - "--dockerfile={{inputs.parameters.dockerfile-path}}"
+            - "--destination={{inputs.parameters.registry-org-name}}/{{inputs.parameters.image-name}}:{{inputs.parameters.image-tag}}"
+          env:
+            - name: GIT_USERNAME #value should be "x-token-auth"
+              valueFrom:
+                secretKeyRef:
+                  name: "{{inputs.parameters.git-cred-secret}}"
+                  key: username
+            - name: GIT_PASSWORD #value should be whatever repo secret you use right now
+              valueFrom:
+                secretKeyRef:
+                  name: "{{inputs.parameters.git-cred-secret}}"
+                  key: token
